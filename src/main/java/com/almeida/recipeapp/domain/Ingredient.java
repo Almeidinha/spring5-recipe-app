@@ -2,14 +2,14 @@ package com.almeida.recipeapp.domain;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.rmi.server.UID;
+import java.util.UUID;
 
 @Entity
 public class Ingredient {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private UID id;
+    private UUID id;
     private String description;
     private BigDecimal amount;
 
@@ -19,11 +19,11 @@ public class Ingredient {
     @ManyToOne
     private Recipe recipe;
 
-    public UID getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(UID id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

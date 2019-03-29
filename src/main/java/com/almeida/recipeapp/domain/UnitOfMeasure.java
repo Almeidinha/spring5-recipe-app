@@ -1,32 +1,37 @@
 package com.almeida.recipeapp.domain;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.rmi.server.UID;
+import java.util.UUID;
+
+// import javax.persistence.GeneratedValue;
+// import javax.persistence.GenerationType;
 
 @Entity
 public class UnitOfMeasure {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private UID id;
-    private String uom;
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
+    private UUID id;
+    private String description;
 
-    public UID getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(UID id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
-    public String getUom() {
-        return uom;
+    public String getDescription() {
+        return description;
     }
 
-    public void setUom(String uom) {
-        this.uom = uom;
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public UnitOfMeasure() {
+        this.id = UUID.randomUUID();
     }
 }

@@ -1,25 +1,27 @@
 package com.almeida.recipeapp.domain;
 
-import javax.persistence.*;
-import java.rmi.server.UID;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 public class Category {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private UID id;
+    // @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private UUID id;
     private String description;
 
     @ManyToMany(mappedBy = "categories")
     private Set<Recipe> recipes;
 
-    public UID getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(UID id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -37,5 +39,9 @@ public class Category {
 
     public void setRecipes(Set<Recipe> recipes) {
         this.recipes = recipes;
+    }
+
+    public Category() {
+        this.id = UUID.randomUUID();
     }
 }

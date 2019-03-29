@@ -1,14 +1,14 @@
 package com.almeida.recipeapp.domain;
 
 import javax.persistence.*;
-import java.rmi.server.UID;
+import java.util.UUID;
 
 @Entity
 public class Notes {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private UID id;
+    private UUID id;
 
     @OneToOne
     private Recipe recipe;
@@ -16,11 +16,11 @@ public class Notes {
     @Lob
     private String recipeNotes;
 
-    public UID getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(UID id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

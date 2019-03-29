@@ -3,15 +3,15 @@ package com.almeida.recipeapp.domain;
 import com.almeida.recipeapp.enums.Difficulty;
 
 import javax.persistence.*;
-import java.rmi.server.UID;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 public class Recipe {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private UID id;
+    private UUID id;
 
     private String description;
     private Integer prepTime;
@@ -42,11 +42,11 @@ public class Recipe {
             inverseJoinColumns = @JoinColumn(name = "category_id"))
     private Set<Category> categories;
 
-    public UID getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(UID id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
