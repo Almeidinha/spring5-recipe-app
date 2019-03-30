@@ -15,6 +15,10 @@ public class UnitOfMeasure {
     private UUID id;
     private String description;
 
+    public UnitOfMeasure() {
+        this.id = UUID.randomUUID();
+    }
+
     public UUID getId() {
         return id;
     }
@@ -31,7 +35,4 @@ public class UnitOfMeasure {
         this.description = description;
     }
 
-    public UnitOfMeasure() {
-        this.id = UUID.randomUUID();
-    }
 }

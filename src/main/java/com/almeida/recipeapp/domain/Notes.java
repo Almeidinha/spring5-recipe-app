@@ -1,13 +1,16 @@
 package com.almeida.recipeapp.domain;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Lob;
+import javax.persistence.OneToOne;
 import java.util.UUID;
 
 @Entity
 public class Notes {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    // @GeneratedValue(strategy = GenerationType.IDENTITY)
     private UUID id;
 
     @OneToOne
@@ -15,6 +18,10 @@ public class Notes {
 
     @Lob
     private String recipeNotes;
+
+    public Notes() {
+        this.id = UUID.randomUUID();
+    }
 
     public UUID getId() {
         return id;
