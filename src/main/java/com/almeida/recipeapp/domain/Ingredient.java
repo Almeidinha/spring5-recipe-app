@@ -23,6 +23,13 @@ public class Ingredient {
         this.id = UUID.randomUUID();
     }
 
+    public Ingredient(String description, BigDecimal amount, UnitOfMeasure unitOfMeasure) {
+        this.id = UUID.randomUUID();
+        this.description = description;
+        this.amount = amount;
+        this.unitOfMeasure = unitOfMeasure;
+    }
+
     public Ingredient(String description, BigDecimal amount, UnitOfMeasure unitOfMeasure, Recipe recipe) {
         this.id = UUID.randomUUID();
         this.description = description;
