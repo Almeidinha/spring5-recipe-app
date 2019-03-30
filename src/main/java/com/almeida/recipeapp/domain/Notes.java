@@ -1,6 +1,7 @@
 package com.almeida.recipeapp.domain;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -9,6 +10,7 @@ import javax.persistence.OneToOne;
 import java.util.UUID;
 
 @Data
+@EqualsAndHashCode(exclude = {"recipe"}) // Lombok doesn't like ManyToMany relations =(
 @Entity
 public class Notes {
 

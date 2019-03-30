@@ -55,4 +55,7 @@ public class Recipe {
         return  this;
     }
 
+    public Recipe() {
+        this.id = UUID.randomUUID();
+    }
 }

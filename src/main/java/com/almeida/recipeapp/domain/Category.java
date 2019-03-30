@@ -1,6 +1,7 @@
 package com.almeida.recipeapp.domain;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -9,6 +10,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @Data
+@EqualsAndHashCode(exclude = {"recipes"}) // Lombok doesn't like ManyToMany relations =(
 @Entity
 public class Category {
 
