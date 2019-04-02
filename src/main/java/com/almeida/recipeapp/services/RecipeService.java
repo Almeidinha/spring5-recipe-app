@@ -1,5 +1,6 @@
 package com.almeida.recipeapp.services;
 
+import com.almeida.recipeapp.commands.RecipeCommand;
 import com.almeida.recipeapp.domain.Recipe;
 
 import java.util.Set;
@@ -11,4 +12,6 @@ public interface RecipeService {
     Set<Recipe> getRecipes();
 
     Recipe findById(UUID id);
+
+    RecipeCommand saveRecipeCommand(RecipeCommand command);
 }

@@ -1,5 +1,7 @@
 package com.almeida.recipeapp.services;
 
+import com.almeida.recipeapp.converters.RecipeCommandToRecipe;
+import com.almeida.recipeapp.converters.RecipeToRecipeCommand;
 import com.almeida.recipeapp.domain.Recipe;
 import com.almeida.recipeapp.repositories.RecipeRepository;
 import org.junit.Before;
@@ -23,10 +25,16 @@ public class RecipeServiceImplTest {
     @Mock
     RecipeRepository recipeRepository;
 
+    @Mock
+    RecipeToRecipeCommand recipeToRecipeCommand;
+
+    @Mock
+    RecipeCommandToRecipe recipeCommandToRecipe;
+
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        recipeService = new RecipeServiceImpl(recipeRepository);
+        recipeService = new RecipeServiceImpl(recipeRepository, recipeCommandToRecipe, recipeToRecipeCommand);
     }
 
     @Test
