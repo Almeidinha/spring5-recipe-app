@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Show Recipe</title>
+
+        <link rel="stylesheet" href="/webjars/bootstrap/3.4.1/css/bootstrap.min.css" />
+
+        <script src="/webjars/jquery/3.3.1/jquery.min.js"></script>
+        <script src="/webjars/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <!--/*@thymesVar id="recipe" type="com.almeida.recipeapp.domain.Recipe"*/-->
+    </head>
+    <body>
+        <div class="container-fluid" style="...">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3">
+                    <div class="panel-group">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <h1 class="panel-title" th:text="${recipe.description}">Recipe description here!!!</h1>
+                            </div>
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <h5>Categories:</h5>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <ul>
+                                            <li th:remove="all">Cat One</li>
+                                            <li th:remove="all">Cat Two</li>
+                                            <li th:each="categorie : ${recipe.categories}" th:text="${categorie.getDescription()}">Cat Three</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <h5>Prep Time:</h5>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <h5 th:text="${recipe.prepTime} + ' min'">30 min</h5>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <h5>Difficulty:</h5>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <h5 th:text="${recipe.difficulty}">Easy</h5>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <h5>Source:</h5>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <h5 th:text="${recipe.source}">Source</h5>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <h5>URL:</h5>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <p><a href="" th:text="${recipe.url}">www</a></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <h1 class="panel-title">Ingredients</h1>
+                            </div>
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <ul>
+                                            <li th:remove="all">1 Cup of milk</li>
+                                            <li th:remove="all">1 Teaspoon of chocolate</li>
+                                            <li th:each="ingredient : ${recipe.ingredients}" th:text="${ingredient.getAmount() +
+                                            ' ' + ingredient.unitOfMeasure.getDescription() +
+                                            ' - ' + ingredient.getDescription()}">1 Teaspoon of sugar</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <h1 class="panel-title">Directions</h1>
+                            </div>
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <p th:text="${recipe.directions}">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <h1 class="panel-title">Notes</h1>
+                            </div>
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <p th:text="${recipe.notes.recipeNotes}">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
