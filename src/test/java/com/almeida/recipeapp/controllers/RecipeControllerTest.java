@@ -79,9 +79,19 @@ public class RecipeControllerTest {
 
         Mockito.when(recipeService.findCommandById(Mockito.any(UUID.class))).thenReturn(command);
 
-        mockMvc.perform(get("/recipe/"+ command.getId() +"/update"))
+        mockMvc.perform(get("/recipe/update/" + command.getId()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("recipe/recipeform"))
                 .andExpect(model().attributeExists("recipe"));
+    }
+
+    @Test
+    public void testDeleteById() throws Exception {
+
+        mockMvc.perform(get("/recipe/delete/" + UUID.randomUUID()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/"));
+
+        Mockito.verify(recipeService, Mockito.times(1)).deleteById(Mockito.any(UUID.class));
     }
 }

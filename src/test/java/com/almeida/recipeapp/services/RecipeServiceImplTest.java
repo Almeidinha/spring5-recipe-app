@@ -64,4 +64,14 @@ public class RecipeServiceImplTest {
         assertEquals(recipes.size(), 1);
         Mockito.verify(recipeRepository, Mockito.times(1)).findAll();
     }
+
+    @Test
+    public void deleteById() throws Exception {
+        // given
+        UUID id = UUID.randomUUID();
+        // then
+        recipeService.deleteById(id);
+        // when
+        Mockito.verify(recipeRepository, Mockito.times(1)).deleteById(Mockito.any(UUID.class));
+    }
 }
