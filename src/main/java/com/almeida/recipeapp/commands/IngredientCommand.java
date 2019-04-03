@@ -10,6 +10,7 @@ import java.util.UUID;
 @Setter
 public class IngredientCommand {
     private UUID id;
+    private UUID recipeId;
     private String description;
     private BigDecimal amount;
     private UnitOfMeasureCommand unitOfMeasure;
