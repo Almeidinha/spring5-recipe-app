@@ -13,5 +13,8 @@ public interface RecipeService {
 
     Recipe findById(UUID id);
 
+    RecipeCommand findCommandById(UUID fromString);
+
     RecipeCommand saveRecipeCommand(RecipeCommand command);
+
 }

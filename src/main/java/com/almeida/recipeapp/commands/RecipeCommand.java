@@ -2,7 +2,6 @@ package com.almeida.recipeapp.commands;
 
 import com.almeida.recipeapp.enums.Difficulty;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.HashSet;
@@ -11,7 +10,6 @@ import java.util.UUID;
 
 @Getter
 @Setter
-@NoArgsConstructor
 public class RecipeCommand {
     private UUID id;
     private String description;
@@ -25,4 +23,8 @@ public class RecipeCommand {
     private Difficulty difficulty;
     private NotesCommand notes;
     private Set<CategoryCommand> categories = new HashSet<>();
+
+    public RecipeCommand() {
+        this.id = UUID.randomUUID();
+    }
 }
