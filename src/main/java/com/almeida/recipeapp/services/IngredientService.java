@@ -7,4 +7,6 @@ import java.util.UUID;
 public interface IngredientService {
 
     IngredientCommand findByRecipeIdAndIngredientId(UUID recipeId, UUID ingredientId);
+
+    IngredientCommand saveIngredientCommand(IngredientCommand command);
 }
