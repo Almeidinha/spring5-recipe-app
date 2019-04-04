@@ -1,6 +1,8 @@
 package com.almeida.recipeapp.controllers;
 
 import com.almeida.recipeapp.commands.IngredientCommand;
+import com.almeida.recipeapp.commands.RecipeCommand;
+import com.almeida.recipeapp.commands.UnitOfMeasureCommand;
 import com.almeida.recipeapp.services.IngredientService;
 import com.almeida.recipeapp.services.RecipeService;
 import com.almeida.recipeapp.services.UnitOfMeasureService;
@@ -42,6 +44,27 @@ public class IngredientController {
         model.addAttribute("ingredient", ingredientService
                 .findByRecipeIdAndIngredientId(UUID.fromString(recipeId), UUID.fromString(id)));
         return "recipe/ingredient/show";
+    }
+
+    @GetMapping
+    @RequestMapping("recipe/{recipeId}/ingredient/new")
+    public String newIngredient(@PathVariable String recipeId, Model model){
+
+        //make sure we have a good id value
+        RecipeCommand recipeCommand = recipeService.findCommandById(UUID.fromString(recipeId));
+        //todo raise exception if null
+
+        //need to return back parent id for hidden form property
+        IngredientCommand ingredientCommand = new IngredientCommand();
+        ingredientCommand.setRecipeId(UUID.fromString(recipeId));
+        model.addAttribute("ingredient", ingredientCommand);
+
+        //init uom
+        ingredientCommand.setUnitOfMeasure(new UnitOfMeasureCommand());
+
+        model.addAttribute("uomList",  unitOfMeasureService.listAllUoms());
+
+        return "recipe/ingredient/ingredientform";
     }
 
     @GetMapping

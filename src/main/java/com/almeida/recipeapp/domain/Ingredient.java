@@ -1,13 +1,15 @@
 package com.almeida.recipeapp.domain;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-@Data
+@Getter
+@Setter
 @EqualsAndHashCode(exclude = {"recipe"}) // Lombok doesn't like ManyToOne relations =(
 @Entity
 public class Ingredient {
