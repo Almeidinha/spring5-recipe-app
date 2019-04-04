@@ -131,7 +131,24 @@ public class IngredientControllerTest {
         )
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/recipe/"+ command.getRecipeId() +"/ingredient/"+ command.getId() +"/show"));
+    }
+
+    @Test
+    public void testDeleteIngredient() throws Exception {
+
+        UUID recipeId = UUID.randomUUID();
+        UUID ingredientId = UUID.randomUUID();
+        //then
+        mockMvc.perform(get("/recipe/" + recipeId + "/ingredient/" + ingredientId + "/delete")
+        )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/recipe/" + recipeId + "/ingredients"));
+
+        Mockito.verify(ingredientService, Mockito.times(1))
+                .deleteById(Mockito.any(UUID.class), Mockito.any(UUID.class));
 
     }
+
+
 
 }
