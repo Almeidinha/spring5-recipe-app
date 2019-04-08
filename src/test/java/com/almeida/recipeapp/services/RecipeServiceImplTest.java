@@ -1,13 +1,14 @@
 package com.almeida.recipeapp.services;
 
+import com.almeida.recipeapp.commands.RecipeCommand;
 import com.almeida.recipeapp.converters.RecipeCommandToRecipe;
 import com.almeida.recipeapp.converters.RecipeToRecipeCommand;
 import com.almeida.recipeapp.domain.Recipe;
+import com.almeida.recipeapp.exceptions.NotFoundException;
 import com.almeida.recipeapp.repositories.RecipeRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.util.HashSet;
@@ -17,6 +18,9 @@ import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 public class RecipeServiceImplTest {
 
@@ -32,46 +36,89 @@ public class RecipeServiceImplTest {
     RecipeCommandToRecipe recipeCommandToRecipe;
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
+
         recipeService = new RecipeServiceImpl(recipeRepository, recipeCommandToRecipe, recipeToRecipeCommand);
     }
 
     @Test
     public void getRecipeByIdTest() throws Exception {
+        UUID id = UUID.randomUUID();
         Recipe recipe = new Recipe();
+        recipe.setId(id);
         Optional<Recipe> recipeOptional = Optional.of(recipe);
 
-        Mockito.when(recipeRepository.findById(Mockito.any(UUID.class))).thenReturn(recipeOptional);
+        when(recipeRepository.findById(any(UUID.class))).thenReturn(recipeOptional);
 
-        Recipe recipeReturned = recipeService.findById(recipe.getId());
+        Recipe recipeReturned = recipeService.findById(id);
 
         assertNotNull("Null recipe returned", recipeReturned);
-        Mockito.verify(recipeRepository, Mockito.times(1)).findById(Mockito.any(UUID.class));
-        Mockito.verify(recipeRepository, Mockito.never()).findAll();
+        verify(recipeRepository, times(1)).findById(any(UUID.class));
+        verify(recipeRepository, never()).findAll();
+    }
+
+    @Test(expected = NotFoundException.class)
+    public void getRecipeByIdTestNotFound() throws Exception {
+
+        Optional<Recipe> recipeOptional = Optional.empty();
+
+        when(recipeRepository.findById(any(UUID.class))).thenReturn(recipeOptional);
+
+        Recipe recipeReturned = recipeService.findById(UUID.randomUUID());
+
+        //should go boom
+    }
+
+    @Test
+    public void getRecipeCommandByIdTest() throws Exception {
+        UUID id = UUID.randomUUID();
+        Recipe recipe = new Recipe();
+        recipe.setId(id);
+        Optional<Recipe> recipeOptional = Optional.of(recipe);
+
+        when(recipeRepository.findById(any(UUID.class))).thenReturn(recipeOptional);
+
+        RecipeCommand recipeCommand = new RecipeCommand();
+        recipeCommand.setId(id);
+
+        when(recipeToRecipeCommand.convert(any())).thenReturn(recipeCommand);
+
+        RecipeCommand commandById = recipeService.findCommandById(id);
+
+        assertNotNull("Null recipe returned", commandById);
+        verify(recipeRepository, times(1)).findById(any(UUID.class));
+        verify(recipeRepository, never()).findAll();
     }
 
     @Test
     public void getRecipesTest() throws Exception {
+
         Recipe recipe = new Recipe();
-        HashSet recipeData = new HashSet();
-        recipeData.add(recipe);
+        HashSet receipesData = new HashSet();
+        receipesData.add(recipe);
 
-        Mockito.when(recipeRepository.findAll()).thenReturn(recipeData);
+        when(recipeService.getRecipes()).thenReturn(receipesData);
 
-        Set<Recipe>  recipes = recipeService.getRecipes();
+        Set<Recipe> recipes = recipeService.getRecipes();
 
         assertEquals(recipes.size(), 1);
-        Mockito.verify(recipeRepository, Mockito.times(1)).findAll();
+        verify(recipeRepository, times(1)).findAll();
+        verify(recipeRepository, never()).findById(any(UUID.class));
     }
 
     @Test
-    public void deleteById() throws Exception {
-        // given
+    public void testDeleteById() throws Exception {
+
+        //given
         UUID id = UUID.randomUUID();
-        // then
+
+        //when
         recipeService.deleteById(id);
-        // when
-        Mockito.verify(recipeRepository, Mockito.times(1)).deleteById(Mockito.any(UUID.class));
+
+        //no 'when', since method has void return type
+
+        //then
+        verify(recipeRepository, times(1)).deleteById(any(UUID.class));
     }
 }
