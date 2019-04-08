@@ -33,7 +33,9 @@ public class RecipeControllerTest {
         MockitoAnnotations.initMocks(this);
 
         controller = new RecipeController(recipeService);
-        mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(controller)
+                .setControllerAdvice(new ControllerExceptionHandler())
+                .build();
     }
 
     @Test
@@ -59,7 +61,7 @@ public class RecipeControllerTest {
     }
 
     @Test
-    public void textRecipeNumberFormatException() throws Exception {
+    public void textRecipeIllegalArgumentException() throws Exception {
 
         mockMvc.perform(get("/recipe/show/asdfgh"))
                 .andExpect(status().isBadRequest())

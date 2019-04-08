@@ -72,18 +72,4 @@ public class RecipeController {
     }
 
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ModelAndView handleNumberFormatException(Exception e) {
-        log.error("Handling not found exception");
-        log.error(e.getMessage());
-
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("400error");
-        modelAndView.addObject("exception", e);
-
-        return modelAndView;
-    }
-
-
 }
