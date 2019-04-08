@@ -2,6 +2,7 @@ package com.almeida.recipeapp.controllers;
 
 import com.almeida.recipeapp.commands.RecipeCommand;
 import com.almeida.recipeapp.domain.Recipe;
+import com.almeida.recipeapp.exceptions.NotFoundException;
 import com.almeida.recipeapp.services.RecipeService;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,6 +47,15 @@ public class RecipeControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("recipe/show"))
                 .andExpect(model().attributeExists("recipe"));
+    }
+
+    @Test
+    public void textRecipeNotFound() throws Exception {
+        Mockito.when(recipeService.findById(Mockito.any(UUID.class))).thenThrow(NotFoundException.class);
+
+        mockMvc.perform(get("/recipe/show/" + UUID.randomUUID()))
+                .andExpect(status().isNotFound())
+                .andExpect(view().name("404error"));
     }
 
     @Test

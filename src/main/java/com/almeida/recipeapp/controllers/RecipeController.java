@@ -1,14 +1,14 @@
 package com.almeida.recipeapp.controllers;
 
 import com.almeida.recipeapp.commands.RecipeCommand;
+import com.almeida.recipeapp.exceptions.NotFoundException;
 import com.almeida.recipeapp.services.RecipeService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.UUID;
 
@@ -56,5 +56,16 @@ public class RecipeController {
 
         recipeService.deleteById(UUID.fromString(id));
         return "redirect:/";
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(NotFoundException.class)
+    public ModelAndView handleNotFount() {
+        log.error("Handling not found exception");
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("404error");
+
+        return modelAndView;
     }
 }
