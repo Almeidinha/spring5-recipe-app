@@ -80,7 +80,9 @@ public class RecipeControllerTest {
 
     @Test
     public void testPostNewRecipeForm() throws Exception {
+        UUID id = UUID.randomUUID();
         RecipeCommand command = new RecipeCommand();
+        command.setId(id);
 
         Mockito.when(recipeService.saveRecipeCommand(Mockito.any())).thenReturn(command);
 
@@ -88,9 +90,28 @@ public class RecipeControllerTest {
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("id", "")
                 .param("description", "some string")
+                .param("directions", "some directions")
         )
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/recipe/show/" + command.getId()));
+                .andExpect(view().name("redirect:/recipe/show/" + id));
+    }
+
+    @Test
+    public void testPostNewRecipeFormValidationFail() throws Exception {
+        UUID id = UUID.randomUUID();
+        RecipeCommand command = new RecipeCommand();
+        command.setId(id);
+
+        Mockito.when(recipeService.saveRecipeCommand(Mockito.any())).thenReturn(command);
+
+        mockMvc.perform(post("/recipe")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .param("id", "")
+
+        )
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("recipe"))
+                .andExpect(view().name("recipe/recipeform"));
     }
 
     @Test
