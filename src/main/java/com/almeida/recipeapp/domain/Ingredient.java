@@ -3,29 +3,19 @@ package com.almeida.recipeapp.domain;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.Type;
 
-import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.UUID;
 
 @Getter
 @Setter
 @EqualsAndHashCode(exclude = {"recipe"}) // Lombok doesn't like ManyToOne relations =(
-@Entity
 public class Ingredient {
 
-    @Id
-    @Type(type = "uuid-char")
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     private UUID id;
     private String description;
     private BigDecimal amount;
-
-    @OneToOne(fetch = FetchType.EAGER)
     UnitOfMeasure unitOfMeasure;
-
-    @ManyToOne
     private Recipe recipe;
 
     public Ingredient() {
