@@ -2,6 +2,7 @@ package com.almeida.recipeapp.domain;
 
 import com.almeida.recipeapp.enums.Difficulty;
 import lombok.Data;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -13,6 +14,7 @@ import java.util.UUID;
 public class Recipe {
 
     @Id
+    @Type(type = "uuid-char")
     //@GeneratedValue(strategy = GenerationType.IDENTITY)
     private UUID id;
 

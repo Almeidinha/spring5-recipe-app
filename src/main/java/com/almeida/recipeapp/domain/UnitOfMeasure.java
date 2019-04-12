@@ -1,6 +1,7 @@
 package com.almeida.recipeapp.domain;
 
 import lombok.Data;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -14,6 +15,7 @@ import java.util.UUID;
 public class UnitOfMeasure {
 
     @Id
+    @Type(type = "uuid-char")
     //@GeneratedValue(strategy = GenerationType.IDENTITY)
     private UUID id;
     private String description;

@@ -3,6 +3,7 @@ package com.almeida.recipeapp.domain;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -15,6 +16,7 @@ import java.util.UUID;
 public class Ingredient {
 
     @Id
+    @Type(type = "uuid-char")
     //@GeneratedValue(strategy = GenerationType.IDENTITY)
     private UUID id;
     private String description;
