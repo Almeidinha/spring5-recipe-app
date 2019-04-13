@@ -1,17 +1,16 @@
 package com.almeida.recipeapp.domain;
-
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.data.annotation.Id;
 
 import java.util.UUID;
 
-@Data
-@EqualsAndHashCode(exclude = {"recipe"}) // Lombok doesn't like ManyToMany relations =(
-
+@Getter
+@Setter
 public class Notes {
 
+    @Id
     private UUID id;
-    private Recipe recipe;
     private String recipeNotes;
 
     public Notes() {

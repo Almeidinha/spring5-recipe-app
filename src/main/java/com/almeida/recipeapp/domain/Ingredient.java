@@ -1,22 +1,24 @@
 package com.almeida.recipeapp.domain;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import java.math.BigDecimal;
 import java.util.UUID;
 
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = {"recipe"}) // Lombok doesn't like ManyToOne relations =(
 public class Ingredient {
 
+    @Id
     private UUID id;
     private String description;
     private BigDecimal amount;
+
+    @DBRef
     UnitOfMeasure unitOfMeasure;
-    private Recipe recipe;
 
     public Ingredient() {
         this.id = UUID.randomUUID();
@@ -27,14 +29,6 @@ public class Ingredient {
         this.description = description;
         this.amount = amount;
         this.unitOfMeasure = unitOfMeasure;
-    }
-
-    public Ingredient(String description, BigDecimal amount, UnitOfMeasure unitOfMeasure, Recipe recipe) {
-        this.id = UUID.randomUUID();
-        this.description = description;
-        this.amount = amount;
-        this.unitOfMeasure = unitOfMeasure;
-        this.recipe = recipe;
     }
 
 }

@@ -1,15 +1,20 @@
 package com.almeida.recipeapp.domain;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.UUID;
 
-// import javax.persistence.GeneratedValue;
-// import javax.persistence.GenerationType;
 
-@Data
+
+@Getter
+@Setter
+@Document
 public class UnitOfMeasure {
 
+    @Id
     private UUID id;
     private String description;
 
