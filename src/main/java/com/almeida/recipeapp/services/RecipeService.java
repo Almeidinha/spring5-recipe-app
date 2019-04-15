@@ -2,21 +2,22 @@ package com.almeida.recipeapp.services;
 
 import com.almeida.recipeapp.commands.RecipeCommand;
 import com.almeida.recipeapp.domain.Recipe;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-import java.util.Set;
 import java.util.UUID;
 
 //@Service
 public interface RecipeService {
 
-    Set<Recipe> getRecipes();
+    Flux<Recipe> getRecipes();
 
-    Recipe findById(UUID id);
+    Mono<Recipe> findById(UUID id);
 
-    RecipeCommand findCommandById(UUID fromString);
+    Mono<RecipeCommand> findCommandById(UUID fromString);
 
-    RecipeCommand saveRecipeCommand(RecipeCommand command);
+    Mono<RecipeCommand> saveRecipeCommand(RecipeCommand command);
 
-    void deleteById(UUID id);
+    Mono<Void> deleteById(UUID id);
 
 }

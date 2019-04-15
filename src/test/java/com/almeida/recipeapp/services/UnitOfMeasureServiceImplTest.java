@@ -4,13 +4,16 @@ import com.almeida.recipeapp.commands.UnitOfMeasureCommand;
 import com.almeida.recipeapp.converters.UnitOfMeasureToUnitOfMeasureCommand;
 import com.almeida.recipeapp.domain.UnitOfMeasure;
 import com.almeida.recipeapp.repositories.UnitOfMeasureRepository;
+import com.almeida.recipeapp.repositories.reactive.UnitOfMeasureReactiveRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import reactor.core.publisher.Flux;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
@@ -21,7 +24,7 @@ public class UnitOfMeasureServiceImplTest {
     UnitOfMeasureService service;
 
     @Mock
-    UnitOfMeasureRepository unitOfMeasureRepository;
+    UnitOfMeasureReactiveRepository unitOfMeasureRepository;
 
     @Before
     public void setUp() throws Exception {
@@ -40,10 +43,10 @@ public class UnitOfMeasureServiceImplTest {
         UnitOfMeasure uom2 = new UnitOfMeasure();
         unitOfMeasures.add(uom2);
 
-        Mockito.when(unitOfMeasureRepository.findAll()).thenReturn(unitOfMeasures);
+        Mockito.when(unitOfMeasureRepository.findAll()).thenReturn(Flux.just(uom1, uom2));
 
         //when
-        Set<UnitOfMeasureCommand> commands = service.listAllUoms();
+        List<UnitOfMeasureCommand> commands = service.listAllUoms().collectList().block();
 
         //then
         assertEquals(2, commands.size());

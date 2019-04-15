@@ -1,14 +1,15 @@
 package com.almeida.recipeapp.services;
 
 import com.almeida.recipeapp.commands.IngredientCommand;
+import reactor.core.publisher.Mono;
 
 import java.util.UUID;
 
 public interface IngredientService {
 
-    IngredientCommand findByRecipeIdAndIngredientId(UUID recipeId, UUID ingredientId);
+    Mono<IngredientCommand> findByRecipeIdAndIngredientId(UUID recipeId, UUID ingredientId);
 
-    IngredientCommand saveIngredientCommand(IngredientCommand command);
+    Mono<IngredientCommand> saveIngredientCommand(IngredientCommand command);
 
-    void deleteById(UUID recipeId, UUID idToDelete);
+    Mono<Void> deleteById(UUID recipeId, UUID idToDelete);
 }

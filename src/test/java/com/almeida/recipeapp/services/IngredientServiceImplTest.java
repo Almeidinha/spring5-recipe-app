@@ -1,24 +1,30 @@
 package com.almeida.recipeapp.services;
 
 import com.almeida.recipeapp.commands.IngredientCommand;
+import com.almeida.recipeapp.commands.UnitOfMeasureCommand;
 import com.almeida.recipeapp.converters.IngredientCommandToIngredient;
 import com.almeida.recipeapp.converters.IngredientToIngredientCommand;
 import com.almeida.recipeapp.converters.UnitOfMeasureCommandToUnitOfMeasure;
 import com.almeida.recipeapp.converters.UnitOfMeasureToUnitOfMeasureCommand;
 import com.almeida.recipeapp.domain.Ingredient;
 import com.almeida.recipeapp.domain.Recipe;
-import com.almeida.recipeapp.repositories.RecipeRepository;
-import com.almeida.recipeapp.repositories.UnitOfMeasureRepository;
+import com.almeida.recipeapp.repositories.reactive.RecipeReactiveRepository;
+import com.almeida.recipeapp.repositories.reactive.UnitOfMeasureReactiveRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import reactor.core.publisher.Mono;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.verify;
 
 public class IngredientServiceImplTest {
 
@@ -26,10 +32,10 @@ public class IngredientServiceImplTest {
     private final IngredientCommandToIngredient ingredientCommandToIngredient;
 
     @Mock
-    RecipeRepository recipeRepository;
+    RecipeReactiveRepository recipeReactiveRepository;
 
     @Mock
-    UnitOfMeasureRepository unitOfMeasureRepository;
+    UnitOfMeasureReactiveRepository unitOfMeasureRepository;
 
     IngredientService ingredientService;
 
@@ -44,7 +50,7 @@ public class IngredientServiceImplTest {
         MockitoAnnotations.initMocks(this);
 
         ingredientService = new IngredientServiceImpl(ingredientToIngredientCommand, ingredientCommandToIngredient,
-                recipeRepository, unitOfMeasureRepository);
+                recipeReactiveRepository, unitOfMeasureRepository);
     }
 
     @Test
@@ -55,58 +61,82 @@ public class IngredientServiceImplTest {
     public void findByRecipeIdAndReceipeIdHappyPath() throws Exception {
         //given
         Recipe recipe = new Recipe();
-        recipe.setId(UUID.fromString("71ad0ed1-ddfc-4687-81bd-7db403f18727"));
+        recipe.setId(UUID.randomUUID());
 
         Ingredient ingredient1 = new Ingredient();
-        ingredient1.setId(UUID.fromString("0bb1cb23-8891-44fd-8004-a8a726fa7d50"));
+        ingredient1.setId(UUID.randomUUID());
 
         Ingredient ingredient2 = new Ingredient();
-        ingredient2.setId(UUID.fromString("1e1317be-6b79-4284-ae80-aa8ecee52a39"));
+        ingredient2.setId(UUID.randomUUID());
 
         Ingredient ingredient3 = new Ingredient();
-        ingredient3.setId(UUID.fromString("e12fd1fb-99ac-4c2b-a1db-8de6be916f1e"));
+        ingredient3.setId(UUID.randomUUID());
 
         recipe.addIngredient(ingredient1);
         recipe.addIngredient(ingredient2);
         recipe.addIngredient(ingredient3);
         Optional<Recipe> recipeOptional = Optional.of(recipe);
 
-        Mockito.when(recipeRepository.findById(Mockito.any(UUID.class))).thenReturn(recipeOptional);
+        when(recipeReactiveRepository.findById(any(UUID.class))).thenReturn(Mono.just(recipe));
 
         //then
-        IngredientCommand ingredientCommand = ingredientService
-                .findByRecipeIdAndIngredientId(UUID.fromString("71ad0ed1-ddfc-4687-81bd-7db403f18727"), UUID.fromString("e12fd1fb-99ac-4c2b-a1db-8de6be916f1e"));
+        IngredientCommand ingredientCommand = ingredientService.findByRecipeIdAndIngredientId(recipe.getId(), ingredient3.getId()).block();
 
         //when
-        assertEquals(UUID.fromString("e12fd1fb-99ac-4c2b-a1db-8de6be916f1e"), ingredientCommand.getId());
-        assertEquals(UUID.fromString("71ad0ed1-ddfc-4687-81bd-7db403f18727"), ingredientCommand.getRecipeId());
-        Mockito.verify(recipeRepository, Mockito.times(1)).findById(Mockito.any(UUID.class));
+        assertEquals(ingredient3.getId(), ingredientCommand.getId());
+        verify(recipeReactiveRepository, times(1)).findById(any(UUID.class));
     }
+
 
     @Test
     public void testSaveRecipeCommand() throws Exception {
+        UUID ingrediendId = UUID.randomUUID();
         //given
         IngredientCommand command = new IngredientCommand();
-        command.setId(UUID.fromString("5a0364cf-211c-40c6-ae19-7d6110729238"));
-        command.setRecipeId(UUID.fromString("803a7d3b-cb9d-4c67-84e2-b5b6f0a9acc2"));
-
-        Optional<Recipe> recipeOptional = Optional.of(new Recipe());
+        command.setId(ingrediendId);
+        command.setRecipeId(UUID.randomUUID());
+        command.setUnitOfMeasure(new UnitOfMeasureCommand());
+        command.getUnitOfMeasure().setId(UUID.randomUUID());
 
         Recipe savedRecipe = new Recipe();
         savedRecipe.addIngredient(new Ingredient());
-        savedRecipe.getIngredients().iterator().next().setId(UUID.fromString("5a0364cf-211c-40c6-ae19-7d6110729238"));
+        savedRecipe.getIngredients().iterator().next().setId(UUID.randomUUID());
 
-        Mockito.when(recipeRepository.findById(Mockito.any(UUID.class))).thenReturn(recipeOptional);
-        Mockito.when(recipeRepository.save(Mockito.any())).thenReturn(savedRecipe);
+        when(recipeReactiveRepository.findById(any(UUID.class))).thenReturn(Mono.just(new Recipe()));
+        when(recipeReactiveRepository.save(any())).thenReturn(Mono.just(savedRecipe));
 
         //when
-        IngredientCommand savedCommand = ingredientService.saveIngredientCommand(command);
+        IngredientCommand savedCommand = ingredientService.saveIngredientCommand(command).block();
 
         //then
-        assertEquals(UUID.fromString("5a0364cf-211c-40c6-ae19-7d6110729238"), savedCommand.getId());
-        Mockito.verify(recipeRepository, Mockito.times(1)).findById(Mockito.any(UUID.class));
-        Mockito.verify(recipeRepository, Mockito.times(1)).save(Mockito.any(Recipe.class));
+        assertEquals(ingrediendId, savedCommand.getId());
+        verify(recipeReactiveRepository, times(1)).findById(any(UUID.class));
+        verify(recipeReactiveRepository, times(1)).save(any(Recipe.class));
 
+    }
+
+    @Test
+    public void testDeleteById() throws Exception {
+        UUID recipeId = UUID.randomUUID();
+        UUID ingredientId = UUID.randomUUID();
+
+        //given
+        Recipe recipe = new Recipe();
+        recipe.setId(recipeId);
+        Ingredient ingredient = new Ingredient();
+        ingredient.setId(ingredientId);
+        recipe.addIngredient(ingredient);
+        Optional<Recipe> recipeOptional = Optional.of(recipe);
+
+        when(recipeReactiveRepository.findById(any(UUID.class))).thenReturn(Mono.just(recipe));
+        when(recipeReactiveRepository.save(any())).thenReturn(Mono.just(recipe));
+
+        //when
+        ingredientService.deleteById(recipeId, ingredientId);
+
+        //then
+        verify(recipeReactiveRepository, times(1)).findById(any(UUID.class));
+        verify(recipeReactiveRepository, times(1)).save(any(Recipe.class));
     }
 
 }

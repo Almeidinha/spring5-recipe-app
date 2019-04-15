@@ -12,6 +12,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import reactor.core.publisher.Mono;
 
 import java.util.UUID;
 
@@ -49,7 +50,7 @@ public class ImageControllerTest {
         RecipeCommand command = new RecipeCommand();
         command.setId(id);
 
-        Mockito.when(recipeService.findCommandById(Mockito.any(UUID.class))).thenReturn(command);
+        Mockito.when(recipeService.findCommandById(Mockito.any(UUID.class))).thenReturn(Mono.just(command));
 
         //when
         mockMvc.perform(get("/recipe/" + id + "/image"))
@@ -67,6 +68,8 @@ public class ImageControllerTest {
         MockMultipartFile multipartFile =
                 new MockMultipartFile("imagefile", "testing.txt", "text/plain",
                         "Spring Framework".getBytes());
+
+        Mockito.when(imageService.saveImageFile(Mockito.any(UUID.class), Mockito.any())).thenReturn(Mono.empty());
 
         mockMvc.perform(multipart("/recipe/" + id + "/image").file(multipartFile))
                 .andExpect(status().is3xxRedirection())
@@ -94,7 +97,7 @@ public class ImageControllerTest {
 
         command.setImage(bytesBoxed);
 
-        Mockito.when(recipeService.findCommandById(Mockito.any(UUID.class))).thenReturn(command);
+        Mockito.when(recipeService.findCommandById(Mockito.any(UUID.class))).thenReturn(Mono.just(command));
 
         //when
         MockHttpServletResponse response = mockMvc.perform(get("/recipe/" + id + "/recipeimage"))

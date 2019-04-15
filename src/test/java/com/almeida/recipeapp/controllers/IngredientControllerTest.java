@@ -2,6 +2,7 @@ package com.almeida.recipeapp.controllers;
 
 import com.almeida.recipeapp.commands.IngredientCommand;
 import com.almeida.recipeapp.commands.RecipeCommand;
+import com.almeida.recipeapp.commands.UnitOfMeasureCommand;
 import com.almeida.recipeapp.services.IngredientService;
 import com.almeida.recipeapp.services.RecipeService;
 import com.almeida.recipeapp.services.UnitOfMeasureService;
@@ -13,10 +14,13 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.HashSet;
 import java.util.UUID;
 
+import static org.mockito.internal.verification.VerificationModeFactory.times;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -48,7 +52,7 @@ public class IngredientControllerTest {
     public void listIngredientsTest() throws Exception {
         // given
         RecipeCommand recipeCommand = new RecipeCommand();
-        Mockito.when(recipeService.findCommandById(Mockito.any(UUID.class))).thenReturn(recipeCommand);
+        Mockito.when(recipeService.findCommandById(Mockito.any(UUID.class))).thenReturn(Mono.just(recipeCommand));
 
         // when
         mockMvc.perform(get("/recipe/ingredients/" + UUID.randomUUID()))
@@ -66,7 +70,7 @@ public class IngredientControllerTest {
 
         //when
         Mockito.when(ingredientService.findByRecipeIdAndIngredientId(
-                Mockito.any(UUID.class), Mockito.any(UUID.class))).thenReturn(ingredientCommand);
+                Mockito.any(UUID.class), Mockito.any(UUID.class))).thenReturn(Mono.just(ingredientCommand));
 
         //then
         mockMvc.perform(get("/recipe/"+ UUID.randomUUID() +"/ingredient/"+ UUID.randomUUID() +"/show"))
@@ -81,8 +85,8 @@ public class IngredientControllerTest {
         RecipeCommand recipeCommand = new RecipeCommand();
 
         //when
-        Mockito.when(recipeService.findCommandById(Mockito.any(UUID.class))).thenReturn(recipeCommand);
-        Mockito.when(unitOfMeasureService.listAllUoms()).thenReturn(new HashSet<>());
+        Mockito.when(recipeService.findCommandById(Mockito.any(UUID.class))).thenReturn(Mono.just(recipeCommand));
+        Mockito.when(unitOfMeasureService.listAllUoms()).thenReturn(Flux.just(new UnitOfMeasureCommand()));
 
         //then
         mockMvc.perform(get("/recipe/"+ recipeCommand.getId() +"/ingredient/new"))
@@ -102,8 +106,8 @@ public class IngredientControllerTest {
 
         //when
         Mockito.when(ingredientService
-                .findByRecipeIdAndIngredientId(Mockito.any(UUID.class), Mockito.any(UUID.class))).thenReturn(ingredientCommand);
-        Mockito.when(unitOfMeasureService.listAllUoms()).thenReturn(new HashSet<>());
+                .findByRecipeIdAndIngredientId(Mockito.any(UUID.class), Mockito.any(UUID.class))).thenReturn(Mono.just(ingredientCommand));
+        Mockito.when(unitOfMeasureService.listAllUoms()).thenReturn(Flux.just(new UnitOfMeasureCommand()));
 
         //then
         mockMvc.perform(get("/recipe/"+ UUID.randomUUID() +"/ingredient/"+ UUID.randomUUID() +"/update"))
@@ -121,7 +125,7 @@ public class IngredientControllerTest {
         command.setRecipeId(UUID.randomUUID());
 
         //when
-        Mockito.when(ingredientService.saveIngredientCommand(Mockito.any())).thenReturn(command);
+        Mockito.when(ingredientService.saveIngredientCommand(Mockito.any())).thenReturn(Mono.just(command));
 
         //then
         mockMvc.perform(post("/recipe/"+ command.getRecipeId() +"/ingredient")
@@ -138,13 +142,16 @@ public class IngredientControllerTest {
 
         UUID recipeId = UUID.randomUUID();
         UUID ingredientId = UUID.randomUUID();
+
+        Mockito.when(ingredientService
+                .deleteById(Mockito.any(UUID.class), Mockito.any(UUID.class))).thenReturn(Mono.empty());
         //then
         mockMvc.perform(get("/recipe/" + recipeId + "/ingredient/" + ingredientId + "/delete")
         )
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/recipe/ingredients/" + recipeId ));
 
-        Mockito.verify(ingredientService, Mockito.times(1))
+        Mockito.verify(ingredientService, times(1))
                 .deleteById(Mockito.any(UUID.class), Mockito.any(UUID.class));
 
     }

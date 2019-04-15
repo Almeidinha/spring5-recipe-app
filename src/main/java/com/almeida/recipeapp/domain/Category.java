@@ -17,7 +17,6 @@ public class Category {
     @Id
     private UUID id;
     private String description;
-    @DBRef
     private Set<Recipe> recipes;
 
     public Category() {

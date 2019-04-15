@@ -12,6 +12,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import reactor.core.publisher.Mono;
 
 import java.util.UUID;
 
@@ -43,7 +44,7 @@ public class RecipeControllerTest {
 
         Recipe recipe = new Recipe();
 
-        Mockito.when(recipeService.findById(Mockito.any(UUID.class))).thenReturn(recipe);
+        Mockito.when(recipeService.findById(Mockito.any(UUID.class))).thenReturn(Mono.just(recipe));
 
         mockMvc.perform(get("/recipe/show/" + recipe.getId()))
                 .andExpect(status().isOk())
@@ -84,7 +85,7 @@ public class RecipeControllerTest {
         RecipeCommand command = new RecipeCommand();
         command.setId(id);
 
-        Mockito.when(recipeService.saveRecipeCommand(Mockito.any())).thenReturn(command);
+        Mockito.when(recipeService.saveRecipeCommand(Mockito.any())).thenReturn(Mono.just(command));
 
         mockMvc.perform(post("/recipe")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -102,7 +103,7 @@ public class RecipeControllerTest {
         RecipeCommand command = new RecipeCommand();
         command.setId(id);
 
-        Mockito.when(recipeService.saveRecipeCommand(Mockito.any())).thenReturn(command);
+        Mockito.when(recipeService.saveRecipeCommand(Mockito.any())).thenReturn(Mono.just(command));
 
         mockMvc.perform(post("/recipe")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -118,7 +119,7 @@ public class RecipeControllerTest {
     public void testGetUpdateView() throws Exception {
         RecipeCommand command = new RecipeCommand();
 
-        Mockito.when(recipeService.findCommandById(Mockito.any(UUID.class))).thenReturn(command);
+        Mockito.when(recipeService.findCommandById(Mockito.any(UUID.class))).thenReturn(Mono.just(command));
 
         mockMvc.perform(get("/recipe/update/" + command.getId()))
                 .andExpect(status().isOk())

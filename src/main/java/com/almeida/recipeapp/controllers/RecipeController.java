@@ -3,7 +3,9 @@ package com.almeida.recipeapp.controllers;
 import com.almeida.recipeapp.commands.RecipeCommand;
 import com.almeida.recipeapp.exceptions.NotFoundException;
 import com.almeida.recipeapp.services.RecipeService;
+import com.almeida.recipeapp.services.UnitOfMeasureService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,30 +21,31 @@ import java.util.UUID;
 public class RecipeController {
 
     private final RecipeService recipeService;
+    @Autowired
+    private final UnitOfMeasureService unitOfMeasureService;
     private static final String RECIPE_RECIPEFORM_URL = "recipe/recipeform";
 
-    public RecipeController(RecipeService recipeService) {
+    public RecipeController(RecipeService recipeService,UnitOfMeasureService unitOfMeasureService) {
         this.recipeService = recipeService;
+        this.unitOfMeasureService = unitOfMeasureService;
     }
 
     @GetMapping("/recipe/show/{id}")
     public String showById(@PathVariable UUID id, Model model){
 
-        model.addAttribute("recipe", recipeService.findById(id));
-
+        model.addAttribute("recipe", recipeService.findById(id).block());
         return "recipe/show";
     }
 
     @GetMapping("recipe/new")
     public String newRecipe(Model model) {
         model.addAttribute("recipe", new RecipeCommand());
-
         return RECIPE_RECIPEFORM_URL;
     }
 
     @GetMapping("recipe/update/{id}")
     public String updateRecipe(@PathVariable String id, Model model) {
-        model.addAttribute("recipe", recipeService.findCommandById(UUID.fromString(id)));
+        model.addAttribute("recipe", recipeService.findCommandById(UUID.fromString(id)).block());
         return RECIPE_RECIPEFORM_URL;
     }
 
@@ -54,16 +57,19 @@ public class RecipeController {
             });
             return RECIPE_RECIPEFORM_URL;
         }
+        // todo Review thia later...
+        command.getIngredients().forEach(ingredientCommand -> {
+            ingredientCommand.setUnitOfMeasure(
+                    unitOfMeasureService.findById(ingredientCommand.getUnitOfMeasure().getId()).block());
+        });
 
-        RecipeCommand savedCommand = recipeService.saveRecipeCommand(command);
-
+        RecipeCommand savedCommand = recipeService.saveRecipeCommand(command).block();
         return "redirect:/recipe/show/" + savedCommand.getId();
     }
 
     @GetMapping("recipe/delete/{id}")
     public String deleteById(@PathVariable String id) {
         log.debug("Deleting id: " + id);
-
         recipeService.deleteById(UUID.fromString(id));
         return "redirect:/";
     }

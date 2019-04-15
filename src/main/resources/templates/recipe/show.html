@@ -18,12 +18,12 @@
                         <div class="panel panel-primary">
                             <div class="panel-heading">
                                 <div class="row">
-                                    <div class="col-md-3">
+                                    <div class="col-md-8">
                                         <h1 class="panel-title" th:text="${recipe.description}">Recipe Description Here!</h1>
                                     </div>
 
-                                    <div class="col-md-1">
-                                        <a class="btn btn-default" href="#"
+                                    <div class="col-md-4">
+                                        <a class="btn btn-default" href="#" style="display: block"
                                            th:href="@{'/recipe/' + ${recipe.id} + '/image'}" role="button">Change Image</a>
                                     </div>
                                 </div>
@@ -95,11 +95,11 @@
                         <div class="panel panel-primary">
                             <div class="panel-heading">
                                 <div class="row">
-                                    <div class="col-md-11 ">
+                                    <div class="col-md-8 ">
                                         <h1 class="panel-title">Ingredients</h1>
                                     </div>
-                                    <div class="col-md-1">
-                                        <a class="btn btn-default" href="#"
+                                    <div class="col-md-4">
+                                        <a class="btn btn-default" href="#" style="display: block"
                                            th:href="@{'/recipe/ingredients/' + ${recipe.id}}" role="button">View</a>
                                     </div>
                                 </div>
