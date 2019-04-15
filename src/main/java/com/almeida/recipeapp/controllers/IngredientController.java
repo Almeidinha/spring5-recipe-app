@@ -80,7 +80,9 @@ public class IngredientController {
 
     @PostMapping("recipe/{recipeId}/ingredient")
     public String saveOrUpdate(@ModelAttribute IngredientCommand command){
-        command.setUnitOfMeasure(unitOfMeasureService.findById(command.getUnitOfMeasure().getId()).block());
+        if (command.getUnitOfMeasure() != null) {
+            command.setUnitOfMeasure(unitOfMeasureService.findById(command.getUnitOfMeasure().getId()).block());
+        }
         IngredientCommand savedCommand = ingredientService.saveIngredientCommand(command).block();
 
         log.debug("saved ingredient id:" + savedCommand.getId());

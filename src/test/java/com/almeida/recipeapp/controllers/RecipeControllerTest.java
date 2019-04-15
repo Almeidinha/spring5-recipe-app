@@ -4,6 +4,7 @@ import com.almeida.recipeapp.commands.RecipeCommand;
 import com.almeida.recipeapp.domain.Recipe;
 import com.almeida.recipeapp.exceptions.NotFoundException;
 import com.almeida.recipeapp.services.RecipeService;
+import com.almeida.recipeapp.services.UnitOfMeasureService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -24,6 +25,8 @@ public class RecipeControllerTest {
 
     @Mock
     RecipeService recipeService;
+    @Mock
+    UnitOfMeasureService unitOfMeasureService;
 
     RecipeController controller;
 
@@ -33,7 +36,7 @@ public class RecipeControllerTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        controller = new RecipeController(recipeService);
+        controller = new RecipeController(recipeService, unitOfMeasureService);
         mockMvc = MockMvcBuilders.standaloneSetup(controller)
                 .setControllerAdvice(new ControllerExceptionHandler())
                 .build();

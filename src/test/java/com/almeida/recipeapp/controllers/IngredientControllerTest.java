@@ -123,6 +123,8 @@ public class IngredientControllerTest {
         IngredientCommand command = new IngredientCommand();
         command.setId(UUID.randomUUID());
         command.setRecipeId(UUID.randomUUID());
+        command.setUnitOfMeasure(new UnitOfMeasureCommand());
+
 
         //when
         Mockito.when(ingredientService.saveIngredientCommand(Mockito.any())).thenReturn(Mono.just(command));
@@ -130,7 +132,6 @@ public class IngredientControllerTest {
         //then
         mockMvc.perform(post("/recipe/"+ command.getRecipeId() +"/ingredient")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("id", "")
                 .param("description", "some string")
         )
                 .andExpect(status().is3xxRedirection())
