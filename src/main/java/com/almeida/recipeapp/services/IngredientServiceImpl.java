@@ -1,21 +1,21 @@
 package com.almeida.recipeapp.services;
 
+import com.almeida.recipeapp.repositories.reactive.RecipeReactiveRepository;
+import com.almeida.recipeapp.repositories.reactive.UnitOfMeasureReactiveRepository;
 import com.almeida.recipeapp.commands.IngredientCommand;
 import com.almeida.recipeapp.converters.IngredientCommandToIngredient;
 import com.almeida.recipeapp.converters.IngredientToIngredientCommand;
 import com.almeida.recipeapp.domain.Ingredient;
 import com.almeida.recipeapp.domain.Recipe;
-import com.almeida.recipeapp.repositories.RecipeRepository;
-import com.almeida.recipeapp.repositories.UnitOfMeasureRepository;
-import com.almeida.recipeapp.repositories.reactive.RecipeReactiveRepository;
-import com.almeida.recipeapp.repositories.reactive.UnitOfMeasureReactiveRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.util.Optional;
-import java.util.UUID;
 
+/**
+ * Created by jt on 6/28/17.
+ */
 @Slf4j
 @Service
 public class IngredientServiceImpl implements IngredientService {
@@ -35,12 +35,12 @@ public class IngredientServiceImpl implements IngredientService {
     }
 
     @Override
-    public Mono<IngredientCommand> findByRecipeIdAndIngredientId(UUID recipeId, UUID ingredientId) {
+    public Mono<IngredientCommand> findByRecipeIdAndIngredientId(String recipeId, String ingredientId) {
 
         return recipeReactiveRepository
                 .findById(recipeId)
                 .flatMapIterable(Recipe::getIngredients)
-                .filter(ingredient -> ingredient.getId().equals(ingredientId))
+                .filter(ingredient -> ingredient.getId().equalsIgnoreCase(ingredientId))
                 .single()
                 .map(ingredient -> {
                     IngredientCommand command = ingredientToIngredientCommand.convert(ingredient);
@@ -71,10 +71,10 @@ public class IngredientServiceImpl implements IngredientService {
                 Ingredient ingredientFound = ingredientOptional.get();
                 ingredientFound.setDescription(command.getDescription());
                 ingredientFound.setAmount(command.getAmount());
-                ingredientFound.setUnitOfMeasure(unitOfMeasureRepository
-                        .findById(command.getUnitOfMeasure().getId()).block());
+                ingredientFound.setUom(unitOfMeasureRepository
+                        .findById(command.getUom().getId()).block());
 
-                if (ingredientFound.getUnitOfMeasure() == null) {
+                if (ingredientFound.getUom() == null) {
                     new RuntimeException("UOM NOT FOUND");
                 }
             } else {
@@ -84,8 +84,6 @@ public class IngredientServiceImpl implements IngredientService {
             }
 
             Recipe savedRecipe = recipeReactiveRepository.save(recipe).block();
-            // Ugly fix until we figure out whats going on!
-            savedRecipe.setIngredients(recipe.getIngredients());
 
             Optional<Ingredient> savedIngredientOptional = savedRecipe.getIngredients().stream()
                     .filter(recipeIngredients -> recipeIngredients.getId().equals(command.getId()))
@@ -97,7 +95,7 @@ public class IngredientServiceImpl implements IngredientService {
                 savedIngredientOptional = savedRecipe.getIngredients().stream()
                         .filter(recipeIngredients -> recipeIngredients.getDescription().equals(command.getDescription()))
                         .filter(recipeIngredients -> recipeIngredients.getAmount().equals(command.getAmount()))
-                        .filter(recipeIngredients -> recipeIngredients.getUnitOfMeasure().getId().equals(command.getUnitOfMeasure().getId()))
+                        .filter(recipeIngredients -> recipeIngredients.getUom().getId().equals(command.getUom().getId()))
                         .findFirst();
             }
 
@@ -109,10 +107,11 @@ public class IngredientServiceImpl implements IngredientService {
 
             return Mono.just(ingredientCommandSaved);
         }
+
     }
 
     @Override
-    public Mono<Void> deleteById(UUID recipeId, UUID idToDelete) {
+    public Mono<Void> deleteById(String recipeId, String idToDelete) {
 
         log.debug("Deleting ingredient: " + recipeId + ":" + idToDelete);
 

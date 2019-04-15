@@ -5,14 +5,15 @@ import com.almeida.recipeapp.domain.UnitOfMeasure;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.UUID;
-
 import static org.junit.Assert.*;
 
+/**
+ * Created by jt on 6/21/17.
+ */
 public class UnitOfMeasureToUnitOfMeasureCommandTest {
 
     public static final String DESCRIPTION = "description";
-    public static final UUID LONG_VALUE = UUID.randomUUID();
+    public static final String LONG_VALUE = "1";
 
     UnitOfMeasureToUnitOfMeasureCommand converter;
 

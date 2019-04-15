@@ -5,19 +5,18 @@ import com.almeida.recipeapp.domain.Recipe;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.UUID;
-
-//@Service
+/**
+ * Created by jt on 6/13/17.
+ */
 public interface RecipeService {
 
     Flux<Recipe> getRecipes();
 
-    Mono<Recipe> findById(UUID id);
+    Mono<Recipe> findById(String id);
 
-    Mono<RecipeCommand> findCommandById(UUID fromString);
+    Mono<RecipeCommand> findCommandById(String id);
 
-    Mono<RecipeCommand> saveRecipeCommand(RecipeCommand command);
+    Mono<RecipeCommand>  saveRecipeCommand(RecipeCommand command);
 
-    Mono<Void> deleteById(UUID id);
-
+    Mono<Void> deleteById(String idToDelete);
 }

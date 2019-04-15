@@ -1,6 +1,5 @@
 package com.almeida.recipeapp.domain;
 
-import com.almeida.recipeapp.enums.Difficulty;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
@@ -8,15 +7,17 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
+/**
+ * Created by jt on 6/13/17.
+ */
 @Getter
 @Setter
 @Document
 public class Recipe {
 
     @Id
-    private UUID id;
+    private String id;
     private String description;
     private Integer prepTime;
     private Integer cookTime;
@@ -36,12 +37,8 @@ public class Recipe {
         }
     }
 
-    public Recipe addIngredient(Ingredient ingredient) {
+    public Recipe addIngredient(Ingredient ingredient){
         this.ingredients.add(ingredient);
-        return  this;
-    }
-
-    public Recipe() {
-        this.id = UUID.randomUUID();
+        return this;
     }
 }

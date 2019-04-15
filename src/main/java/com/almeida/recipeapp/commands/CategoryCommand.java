@@ -1,17 +1,16 @@
 package com.almeida.recipeapp.commands;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.UUID;
-
-@Getter
+/**
+ * Created by jt on 6/21/17.
+ */
 @Setter
+@Getter
+@NoArgsConstructor
 public class CategoryCommand {
-    private UUID id;
+    private String id;
     private String description;
-
-    public CategoryCommand() {
-        this.id = UUID.randomUUID();
-    }
 }

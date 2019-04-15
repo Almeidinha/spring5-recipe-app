@@ -5,16 +5,14 @@ import com.almeida.recipeapp.commands.IngredientCommand;
 import com.almeida.recipeapp.commands.NotesCommand;
 import com.almeida.recipeapp.commands.RecipeCommand;
 import com.almeida.recipeapp.domain.Recipe;
-import com.almeida.recipeapp.enums.Difficulty;
+import com.almeida.recipeapp.domain.Difficulty;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.UUID;
 
 import static org.junit.Assert.*;
 
 public class RecipeCommandToRecipeTest {
-    public static final UUID RECIPE_ID = UUID.randomUUID();
+    public static final String RECIPE_ID = "1";
     public static final Integer COOK_TIME = Integer.valueOf("5");
     public static final Integer PREP_TIME = Integer.valueOf("7");
     public static final String DESCRIPTION = "My Recipe";
@@ -23,11 +21,11 @@ public class RecipeCommandToRecipeTest {
     public static final Integer SERVINGS = Integer.valueOf("3");
     public static final String SOURCE = "Source";
     public static final String URL = "Some URL";
-    public static final UUID CAT_ID_1 = UUID.randomUUID();
-    public static final UUID CAT_ID2 = UUID.randomUUID();
-    public static final UUID INGRED_ID_1 = UUID.randomUUID();
-    public static final UUID INGRED_ID_2 = UUID.randomUUID();
-    public static final UUID NOTES_ID = UUID.randomUUID();
+    public static final String CAT_ID_1 = "1";
+    public static final String CAT_ID2 = "2";
+    public static final String INGRED_ID_1 = "3";
+    public static final String INGRED_ID_2 = "4";
+    public static final String NOTES_ID = "4";
 
     RecipeCommandToRecipe converter;
 

@@ -4,10 +4,17 @@
     <meta charset="UTF-8"/>
     <title>Recipe Form</title>
 
-    <link rel="stylesheet" href="/webjars/bootstrap/3.4.1/css/bootstrap.min.css" />
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"
+          th:href="@{/webjars/bootstrap/3.3.7-1/css/bootstrap.min.css}">
 
-    <script src="/webjars/jquery/3.3.1/jquery.min.js"></script>
-    <script src="/webjars/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="/webjars/jquery/1.11.1/jquery.min.js"></script>
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous" th:src="@{/webjars/bootstrap/3.3.7-1/js/bootstrap.min.js}"></script>
 </head>
 <body>
 <!--/*@thymesVar id="recipe" type="com.almeida.recipeapp.domain.Recipe"*/-->
@@ -65,7 +72,7 @@
                                     <input type="text" class="form-control" th:field="*{prepTime}" th:errorclass="has-error"/>
                                     <span class="help-block" th:if="${#fields.hasErrors('prepTime')}">
                                         <ul>
-                                            <li th:each="err : ${#fields.errors('prepTime')}" th:text="${err}"/>
+                                            <li th:each="err : Difficulty${#fields.errors('prepTime')}" th:text="${err}"/>
                                         </ul>
                                     </span>
                                 </div>
@@ -82,7 +89,7 @@
                                 <div class="col-md-3 form-group">
                                     <label>Difficulty:</label>
                                     <select class="form-control" th:field="*{difficulty}">
-                                        <option th:each="difficultyValue : ${T(com.almeida.recipeapp.enums.Difficulty).values()}"
+                                        <option th:each="difficultyValue : ${T(com.almeida.recipeapp.domain.Difficulty).values()}"
                                                 th:value="${difficultyValue.name()}"
                                                 th:text="${difficultyValue.name()}"
                                         >val
@@ -130,8 +137,8 @@
                                     <h1 class="panel-title">Ingredients</h1>
                                 </div>
                                 <div class="col-md-4">
-                                    <a class="btn btn-default" href="#" style="display: block"
-                                       th:href="@{'/recipe/ingredients/' + ${recipe.id} }" role="button">View</a>
+                                    <a class="btn btn-default" href="#" style="display: block;"
+                                       th:href="@{'/recipe/' + ${recipe.id} + '/ingredients'}" role="button">View</a>
                                 </div>
                             </div>
                         </div>
@@ -144,18 +151,18 @@
                                         <li th:remove="all">asdf</li>
                                         <li th:each="ingredient : ${recipe.ingredients}"
                                             th:text="${(ingredient.getAmount() +
-                                        ' ' + ingredient.unitOfMeasure.getDescription() +
+                                        ' ' + ingredient.uom.getDescription() +
                                         ' - ' + ingredient.getDescription())}">1 Teaspoon of Sugar
                                         </li>
                                     </ul>
                                     <div th:each="ingredientEach, idx : ${recipe.ingredients}" >
-                                        <input  type="hidden" th:field="*{ingredients[__${idx.index}__]?.id}" />
-                                        <input  type="hidden" th:field="*{ingredients[__${idx.index}__]?.description}" />
-                                        <input  type="hidden" th:field="*{ingredients[__${idx.index}__]?.amount}" />
-                                        <input  type="hidden" th:field="*{ingredients[__${idx.index}__]?.unitOfMeasure.id}" />
+                                        <input  type="hidden" th:field="*{ingredients[__${idx.index}__].id}" />
+                                        <input  type="hidden" th:field="*{ingredients[__${idx.index}__].description}" />
+                                        <input  type="hidden" th:field="*{ingredients[__${idx.index}__].amount}" />
+                                        <input  type="hidden" th:field="*{ingredients[__${idx.index}__].uom.id}" />
                                     </div>
                                     <div th:each="catEach, idx : ${recipe.categories}" >
-                                        <input  type="hidden" th:field="*{categories[__${idx.index}__]?.id}" />
+                                        <input  type="hidden" th:field="*{categories[__${idx.index}__].id}" />
                                     </div>
                                 </div>
                             </div>

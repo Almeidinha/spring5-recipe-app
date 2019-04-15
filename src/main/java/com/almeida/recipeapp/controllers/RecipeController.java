@@ -3,9 +3,7 @@ package com.almeida.recipeapp.controllers;
 import com.almeida.recipeapp.commands.RecipeCommand;
 import com.almeida.recipeapp.exceptions.NotFoundException;
 import com.almeida.recipeapp.services.RecipeService;
-import com.almeida.recipeapp.services.UnitOfMeasureService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,78 +12,81 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
-import java.util.UUID;
 
+/**
+ * Created by jt on 6/19/17.
+ */
 @Slf4j
 @Controller
 public class RecipeController {
 
-    private final RecipeService recipeService;
-    @Autowired
-    private final UnitOfMeasureService unitOfMeasureService;
     private static final String RECIPE_RECIPEFORM_URL = "recipe/recipeform";
+    private final RecipeService recipeService;
 
-    public RecipeController(RecipeService recipeService,UnitOfMeasureService unitOfMeasureService) {
+    public RecipeController(RecipeService recipeService) {
         this.recipeService = recipeService;
-        this.unitOfMeasureService = unitOfMeasureService;
     }
 
-    @GetMapping("/recipe/show/{id}")
-    public String showById(@PathVariable UUID id, Model model){
+    @GetMapping("/recipe/{id}/show")
+    public String showById(@PathVariable String id, Model model){
 
         model.addAttribute("recipe", recipeService.findById(id).block());
+
         return "recipe/show";
     }
 
     @GetMapping("recipe/new")
-    public String newRecipe(Model model) {
+    public String newRecipe(Model model){
         model.addAttribute("recipe", new RecipeCommand());
-        return RECIPE_RECIPEFORM_URL;
+
+        return "recipe/recipeform";
     }
 
-    @GetMapping("recipe/update/{id}")
-    public String updateRecipe(@PathVariable String id, Model model) {
-        model.addAttribute("recipe", recipeService.findCommandById(UUID.fromString(id)).block());
+    @GetMapping("recipe/{id}/update")
+    public String updateRecipe(@PathVariable String id, Model model){
+        model.addAttribute("recipe", recipeService.findCommandById(id).block());
         return RECIPE_RECIPEFORM_URL;
     }
 
     @PostMapping("recipe")
-    public String saveOrUpdate(@Valid @ModelAttribute("recipe") RecipeCommand command, BindingResult result) {
-        if (result.hasErrors()) {
-            result.getAllErrors().forEach(objectError -> {
+    public String saveOrUpdate(@Valid @ModelAttribute("recipe") RecipeCommand command, BindingResult bindingResult){
+
+        if(bindingResult.hasErrors()){
+
+            bindingResult.getAllErrors().forEach(objectError -> {
                 log.debug(objectError.toString());
             });
+
             return RECIPE_RECIPEFORM_URL;
         }
-        // todo Review thia later...
-        command.getIngredients().forEach(ingredientCommand -> {
-            ingredientCommand.setUnitOfMeasure(
-                    unitOfMeasureService.findById(ingredientCommand.getUnitOfMeasure().getId()).block());
-        });
 
         RecipeCommand savedCommand = recipeService.saveRecipeCommand(command).block();
-        return "redirect:/recipe/show/" + savedCommand.getId();
+
+        return "redirect:/recipe/" + savedCommand.getId() + "/show";
     }
 
-    @GetMapping("recipe/delete/{id}")
-    public String deleteById(@PathVariable String id) {
+    @GetMapping("recipe/{id}/delete")
+    public String deleteById(@PathVariable String id){
+
         log.debug("Deleting id: " + id);
-        recipeService.deleteById(UUID.fromString(id));
+
+        recipeService.deleteById(id);
         return "redirect:/";
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(NotFoundException.class)
-    public ModelAndView handleNotFount(Exception e) {
+    public ModelAndView handleNotFound(Exception exception){
+
         log.error("Handling not found exception");
-        log.error(e.getMessage());
+        log.error(exception.getMessage());
 
         ModelAndView modelAndView = new ModelAndView();
+
         modelAndView.setViewName("404error");
-        modelAndView.addObject("exception", e);
+        modelAndView.addObject("exception", exception);
 
         return modelAndView;
     }
-
 
 }

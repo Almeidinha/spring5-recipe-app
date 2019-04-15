@@ -4,8 +4,10 @@ import com.almeida.recipeapp.domain.Category;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import reactor.core.publisher.Mono;
 
-import java.util.UUID;
+/**
+ * Created by jt on 8/17/17.
+ */
+public interface CategoryReactiveRepository extends ReactiveMongoRepository<Category, String> {
 
-public interface CategoryReactiveRepository extends ReactiveMongoRepository<Category, UUID> {
     Mono<Category> findByDescription(String description);
 }

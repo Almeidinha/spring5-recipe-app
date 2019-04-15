@@ -4,8 +4,10 @@ import com.almeida.recipeapp.domain.UnitOfMeasure;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import reactor.core.publisher.Mono;
 
-import java.util.UUID;
+/**
+ * Created by jt on 8/17/17.
+ */
+public interface UnitOfMeasureReactiveRepository extends ReactiveMongoRepository<UnitOfMeasure, String> {
 
-public interface UnitOfMeasureReactiveRepository extends ReactiveMongoRepository<UnitOfMeasure, UUID> {
     Mono<UnitOfMeasure> findByDescription(String description);
 }

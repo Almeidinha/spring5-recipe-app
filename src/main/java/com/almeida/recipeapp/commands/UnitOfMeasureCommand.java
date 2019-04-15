@@ -1,17 +1,16 @@
 package com.almeida.recipeapp.commands;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.UUID;
-
+/**
+ * Created by jt on 6/21/17.
+ */
 @Getter
 @Setter
+@NoArgsConstructor
 public class UnitOfMeasureCommand {
-    private UUID id;
+    private String id;
     private String description;
-
-    public UnitOfMeasureCommand() {
-        this.id = UUID.randomUUID();
-    }
 }

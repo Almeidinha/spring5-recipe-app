@@ -14,6 +14,7 @@ import static org.junit.Assert.assertNotNull;
 @RunWith(SpringRunner.class)
 @DataMongoTest
 public class CategoryReactiveRepositoryTest {
+
     @Autowired
     CategoryReactiveRepository categoryReactiveRepository;
 

@@ -1,5 +1,6 @@
 package com.almeida.recipeapp.converters;
 
+
 import com.almeida.recipeapp.commands.CategoryCommand;
 import com.almeida.recipeapp.domain.Category;
 import lombok.Synchronized;
@@ -7,8 +8,11 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
+/**
+ * Created by jt on 6/21/17.
+ */
 @Component
-public class CategoryCommandToCategory implements Converter<CategoryCommand, Category> {
+public class CategoryCommandToCategory implements Converter<CategoryCommand, Category>{
 
     @Synchronized
     @Nullable
@@ -23,5 +27,4 @@ public class CategoryCommandToCategory implements Converter<CategoryCommand, Cat
         category.setDescription(source.getDescription());
         return category;
     }
-
 }

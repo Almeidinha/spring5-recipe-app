@@ -5,13 +5,14 @@ import com.almeida.recipeapp.domain.Category;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.UUID;
-
 import static org.junit.Assert.*;
 
+/**
+ * Created by jt on 6/21/17.
+ */
 public class CategoryToCategoryCommandTest {
 
-    public static final UUID ID_VALUE = UUID.randomUUID();
+    public static final String ID_VALUE = "1";
     public static final String DESCRIPTION = "descript";
     CategoryToCategoryCommand convter;
 

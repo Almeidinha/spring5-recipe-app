@@ -3,9 +3,10 @@ package com.almeida.recipeapp.services;
 import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Mono;
 
-import java.util.UUID;
-
+/**
+ * Created by jt on 7/3/17.
+ */
 public interface ImageService {
 
-    Mono<Void> saveImageFile(UUID recipeId, MultipartFile file);
+    Mono<Void> saveImageFile(String recipeId, MultipartFile file);
 }

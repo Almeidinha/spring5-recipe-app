@@ -7,16 +7,19 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 
+/**
+ * Created by jt on 7/14/17.
+ */
 @Slf4j
 @ControllerAdvice
 public class ControllerExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(NumberFormatException.class)
-    public ModelAndView handleNumberFormat(Exception exception) {
+    public ModelAndView handleNumberFormat(Exception exception){
 
         log.error("Handling Number Format Exception");
-        log.error("Error: " + exception.getMessage());
+        log.error(exception.getMessage());
 
         ModelAndView modelAndView = new ModelAndView();
 
@@ -25,18 +28,4 @@ public class ControllerExceptionHandler {
 
         return modelAndView;
     }
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ModelAndView handleIllegalArgument(Exception e) {
-        log.error("Handling not found exception");
-        log.error("Error:  " + e.getMessage());
-
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("400error");
-        modelAndView.addObject("exception", e);
-
-        return modelAndView;
-    }
-
 }

@@ -1,50 +1,55 @@
 package com.almeida.recipeapp.services;
 
-import com.almeida.recipeapp.domain.Recipe;
-import com.almeida.recipeapp.repositories.RecipeRepository;
 import com.almeida.recipeapp.repositories.reactive.RecipeReactiveRepository;
+import com.almeida.recipeapp.domain.Recipe;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
-import java.util.UUID;
 
+/**
+ * Created by jt on 7/3/17.
+ */
 @Slf4j
 @Service
 public class ImageServiceImpl implements ImageService {
 
+    private final RecipeReactiveRepository recipeReactiveRepository;
 
-    private final RecipeReactiveRepository recipeRepository;
-
-    public ImageServiceImpl( RecipeReactiveRepository recipeService) {
-        this.recipeRepository = recipeService;
+    public ImageServiceImpl(RecipeReactiveRepository recipeService) {
+        this.recipeReactiveRepository = recipeService;
     }
 
     @Override
-    public Mono<Void> saveImageFile(UUID recipeId, MultipartFile file) {
-        Mono<Recipe> recipeMono = recipeRepository.findById(recipeId)
+    public Mono<Void> saveImageFile(String recipeId, MultipartFile file) {
+
+        Mono<Recipe> recipeMono = recipeReactiveRepository.findById(recipeId)
                 .map(recipe -> {
-                    Byte[] bytes = new Byte[0];
+                    Byte[] byteObjects = new Byte[0];
                     try {
-                        bytes = new Byte[file.getBytes().length];
+                        byteObjects = new Byte[file.getBytes().length];
 
                         int i = 0;
+
                         for (byte b : file.getBytes()) {
-                            bytes[i++] = b;
+                            byteObjects[i++] = b;
                         }
 
-                        recipe.setImage(bytes);
-                        return  recipe;
+                        recipe.setImage(byteObjects);
+
+                        return recipe;
+
                     } catch (IOException e) {
                         e.printStackTrace();
                         throw new RuntimeException(e);
                     }
                 });
 
-        recipeRepository.save(recipeMono.block()).block();
+        recipeReactiveRepository.save(recipeMono.block()).block();
+
         return Mono.empty();
+
     }
 }

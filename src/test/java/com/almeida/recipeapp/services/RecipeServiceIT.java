@@ -1,10 +1,10 @@
 package com.almeida.recipeapp.services;
 
 import com.almeida.recipeapp.commands.RecipeCommand;
-import com.almeida.recipeapp.converters.RecipeCommandToRecipe;
-import com.almeida.recipeapp.converters.RecipeToRecipeCommand;
 import com.almeida.recipeapp.domain.Recipe;
 import com.almeida.recipeapp.repositories.RecipeRepository;
+import com.almeida.recipeapp.converters.RecipeCommandToRecipe;
+import com.almeida.recipeapp.converters.RecipeToRecipeCommand;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +13,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.junit.Assert.assertEquals;
 
+
+/**
+ * Created by jt on 6/21/17.
+ */
+//@DataMongoTest
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class RecipeServiceIT {

@@ -7,60 +7,63 @@ import com.almeida.recipeapp.domain.Recipe;
 import com.almeida.recipeapp.repositories.reactive.RecipeReactiveRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.UUID;
-
+/**
+ * Created by jt on 6/13/17.
+ */
 @Slf4j
 @Service
 public class RecipeServiceImpl implements RecipeService {
 
-    private final RecipeReactiveRepository recipeRepository;
+    private final RecipeReactiveRepository recipeReactiveRepository;
     private final RecipeCommandToRecipe recipeCommandToRecipe;
     private final RecipeToRecipeCommand recipeToRecipeCommand;
 
-    public RecipeServiceImpl(RecipeReactiveRepository recipeRepository, RecipeCommandToRecipe recipeCommandToRecipe, RecipeToRecipeCommand recipeToRecipeCommand) {
-        this.recipeRepository = recipeRepository;
+    public RecipeServiceImpl(RecipeReactiveRepository recipeReactiveRepository, RecipeCommandToRecipe recipeCommandToRecipe, RecipeToRecipeCommand recipeToRecipeCommand) {
+        this.recipeReactiveRepository = recipeReactiveRepository;
         this.recipeCommandToRecipe = recipeCommandToRecipe;
         this.recipeToRecipeCommand = recipeToRecipeCommand;
     }
 
     @Override
     public Flux<Recipe> getRecipes() {
-        log.debug("I'm am in the Service!!!");
-        return recipeRepository.findAll();
+        log.debug("I'm in the service");
+        return recipeReactiveRepository.findAll();
     }
 
     @Override
-    public Mono<Recipe> findById(UUID id) {
-        return recipeRepository.findById(id);
+    public Mono<Recipe> findById(String id) {
+        return recipeReactiveRepository.findById(id);
     }
 
     @Override
-    public Mono<RecipeCommand> findCommandById(UUID id) {
+    public Mono<RecipeCommand> findCommandById(String id) {
 
-        return recipeRepository.findById(id)
+       return recipeReactiveRepository.findById(id)
                 .map(recipe -> {
                     RecipeCommand recipeCommand = recipeToRecipeCommand.convert(recipe);
-                    // enhance command object with id value
+
                     recipeCommand.getIngredients().forEach(rc -> {
                         rc.setRecipeId(recipeCommand.getId());
                     });
+
                     return recipeCommand;
                 });
     }
 
     @Override
-    public Mono<RecipeCommand> saveRecipeCommand(RecipeCommand command) {
-        return recipeRepository.save(recipeCommandToRecipe.convert(command))
+    public Mono<RecipeCommand>  saveRecipeCommand(RecipeCommand command) {
+
+        return recipeReactiveRepository.save(recipeCommandToRecipe.convert(command))
                 .map(recipeToRecipeCommand::convert);
     }
 
     @Override
-    public Mono<Void> deleteById(UUID id) {
-        recipeRepository.deleteById(id).block();
+    public Mono<Void> deleteById(String idToDelete) {
+        recipeReactiveRepository.deleteById(idToDelete).block();
+
         return Mono.empty();
     }
 }

@@ -1,20 +1,26 @@
 package com.almeida.recipeapp.commands;
 
-import com.almeida.recipeapp.enums.Difficulty;
+import com.almeida.recipeapp.domain.Difficulty;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.URL;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * Created by jt on 6/21/17.
+ */
 @Getter
 @Setter
+@NoArgsConstructor
 public class RecipeCommand {
-    private UUID id;
+    private String id;
 
     @NotBlank
     @Size(min = 3, max = 255)
@@ -44,8 +50,4 @@ public class RecipeCommand {
     private Difficulty difficulty;
     private NotesCommand notes;
     private List<CategoryCommand> categories = new ArrayList<>();
-
-    public RecipeCommand() {
-        this.id = UUID.randomUUID();
-    }
 }

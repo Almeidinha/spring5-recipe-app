@@ -1,21 +1,21 @@
 package com.almeida.recipeapp.commands;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
+/**
+ * Created by jt on 6/21/17.
+ */
 @Getter
 @Setter
+@NoArgsConstructor
 public class IngredientCommand {
-    private UUID id;
-    private UUID recipeId;
+    private String id;
+    private String recipeId;
     private String description;
     private BigDecimal amount;
-    private UnitOfMeasureCommand unitOfMeasure;
-
-    public IngredientCommand() {
-        this.id = UUID.randomUUID();
-    }
+    private UnitOfMeasureCommand uom;
 }

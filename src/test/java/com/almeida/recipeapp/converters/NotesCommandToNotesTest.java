@@ -5,13 +5,11 @@ import com.almeida.recipeapp.domain.Notes;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.UUID;
-
 import static org.junit.Assert.*;
 
 public class NotesCommandToNotesTest {
 
-    public static final UUID ID_VALUE = UUID.randomUUID();
+    public static final String ID_VALUE = "1";
     public static final String RECIPE_NOTES = "Notes";
     NotesCommandToNotes converter;
 

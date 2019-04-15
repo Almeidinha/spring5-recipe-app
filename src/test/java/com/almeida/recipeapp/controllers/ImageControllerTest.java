@@ -6,7 +6,6 @@ import com.almeida.recipeapp.services.RecipeService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockMultipartFile;
@@ -14,9 +13,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import reactor.core.publisher.Mono;
 
-import java.util.UUID;
-
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -45,46 +43,43 @@ public class ImageControllerTest {
 
     @Test
     public void getImageForm() throws Exception {
-        UUID id = UUID.randomUUID();
         //given
         RecipeCommand command = new RecipeCommand();
-        command.setId(id);
+        command.setId("1");
 
-        Mockito.when(recipeService.findCommandById(Mockito.any(UUID.class))).thenReturn(Mono.just(command));
+        when(recipeService.findCommandById(anyString())).thenReturn(Mono.just(command));
 
         //when
-        mockMvc.perform(get("/recipe/" + id + "/image"))
+        mockMvc.perform(get("/recipe/1/image"))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("recipe"));
 
-        Mockito.verify(recipeService, Mockito.times(1)).findCommandById(Mockito.any(UUID.class));
+        verify(recipeService, times(1)).findCommandById(anyString());
 
     }
 
     @Test
     public void handleImagePost() throws Exception {
-        UUID id = UUID.randomUUID();
-
         MockMultipartFile multipartFile =
                 new MockMultipartFile("imagefile", "testing.txt", "text/plain",
                         "Spring Framework".getBytes());
 
-        Mockito.when(imageService.saveImageFile(Mockito.any(UUID.class), Mockito.any())).thenReturn(Mono.empty());
+        when(imageService.saveImageFile(anyString(), any())).thenReturn(Mono.empty());
 
-        mockMvc.perform(multipart("/recipe/" + id + "/image").file(multipartFile))
+        mockMvc.perform(multipart("/recipe/1/image").file(multipartFile))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(header().string("Location", "/recipe/show/" + id));
+                .andExpect(header().string("Location", "/recipe/1/show"));
 
-        Mockito.verify(imageService, Mockito.times(1))
-                .saveImageFile(Mockito.any(UUID.class), Mockito.any());
+        verify(imageService, times(1)).saveImageFile(anyString(), any());
     }
+
 
     @Test
     public void renderImageFromDB() throws Exception {
-        UUID id = UUID.randomUUID();
+
         //given
         RecipeCommand command = new RecipeCommand();
-        command.setId(id);
+        command.setId("1");
 
         String s = "fake image text";
         Byte[] bytesBoxed = new Byte[s.getBytes().length];
@@ -97,10 +92,10 @@ public class ImageControllerTest {
 
         command.setImage(bytesBoxed);
 
-        Mockito.when(recipeService.findCommandById(Mockito.any(UUID.class))).thenReturn(Mono.just(command));
+        when(recipeService.findCommandById(anyString())).thenReturn(Mono.just(command));
 
         //when
-        MockHttpServletResponse response = mockMvc.perform(get("/recipe/" + id + "/recipeimage"))
+        MockHttpServletResponse response = mockMvc.perform(get("/recipe/1/recipeimage"))
                 .andExpect(status().isOk())
                 .andReturn().getResponse();
 
@@ -108,13 +103,5 @@ public class ImageControllerTest {
 
         assertEquals(s.getBytes().length, reponseBytes.length);
     }
-
-    @Test
-    public void testGetImageIllegalArgumentException() throws Exception {
-        mockMvc.perform(get("/recipe/asd/recipeimage"))
-                .andExpect(status().isBadRequest())
-                .andExpect(view().name("400error"));
-    }
-
 
 }

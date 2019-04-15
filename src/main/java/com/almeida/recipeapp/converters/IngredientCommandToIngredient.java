@@ -1,12 +1,15 @@
 package com.almeida.recipeapp.converters;
 
 import com.almeida.recipeapp.commands.IngredientCommand;
-import com.almeida.recipeapp.domain.Ingredient;
 import com.almeida.recipeapp.domain.Recipe;
+import com.almeida.recipeapp.domain.Ingredient;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
+/**
+ * Created by jt on 6/21/17.
+ */
 @Component
 public class IngredientCommandToIngredient implements Converter<IngredientCommand, Ingredient> {
 
@@ -34,8 +37,7 @@ public class IngredientCommandToIngredient implements Converter<IngredientComman
 
         ingredient.setAmount(source.getAmount());
         ingredient.setDescription(source.getDescription());
-        ingredient.setUnitOfMeasure(uomConverter.convert(source.getUnitOfMeasure()));
+        ingredient.setUom(uomConverter.convert(source.getUom()));
         return ingredient;
     }
-
 }

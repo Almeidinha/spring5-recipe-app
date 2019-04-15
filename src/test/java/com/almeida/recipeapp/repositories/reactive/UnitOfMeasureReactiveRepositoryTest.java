@@ -13,6 +13,7 @@ import static org.junit.Assert.assertEquals;
 @RunWith(SpringRunner.class)
 @DataMongoTest
 public class UnitOfMeasureReactiveRepositoryTest {
+
     public static final String EACH = "Each";
 
     @Autowired

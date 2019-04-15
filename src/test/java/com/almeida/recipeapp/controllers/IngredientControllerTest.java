@@ -9,7 +9,6 @@ import com.almeida.recipeapp.services.UnitOfMeasureService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -17,10 +16,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.HashSet;
-import java.util.UUID;
-
-import static org.mockito.internal.verification.VerificationModeFactory.times;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -49,31 +46,31 @@ public class IngredientControllerTest {
     }
 
     @Test
-    public void listIngredientsTest() throws Exception {
-        // given
+    public void testListIngredients() throws Exception {
+        //given
         RecipeCommand recipeCommand = new RecipeCommand();
-        Mockito.when(recipeService.findCommandById(Mockito.any(UUID.class))).thenReturn(Mono.just(recipeCommand));
+        when(recipeService.findCommandById(anyString())).thenReturn(Mono.just(recipeCommand));
 
-        // when
-        mockMvc.perform(get("/recipe/ingredients/" + UUID.randomUUID()))
-        .andExpect(status().isOk())
-        .andExpect(view().name("recipe/ingredient/list"))
-        .andExpect(model().attributeExists("recipe"));
+        //when
+        mockMvc.perform(get("/recipe/1/ingredients"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("recipe/ingredient/list"))
+                .andExpect(model().attributeExists("recipe"));
 
-        // then
-        Mockito.verify(recipeService, Mockito.times(1)).findCommandById(Mockito.any(UUID.class));
+        //then
+        verify(recipeService, times(1)).findCommandById(anyString());
     }
+
     @Test
     public void testShowIngredient() throws Exception {
         //given
         IngredientCommand ingredientCommand = new IngredientCommand();
 
         //when
-        Mockito.when(ingredientService.findByRecipeIdAndIngredientId(
-                Mockito.any(UUID.class), Mockito.any(UUID.class))).thenReturn(Mono.just(ingredientCommand));
+        when(ingredientService.findByRecipeIdAndIngredientId(anyString(), anyString())).thenReturn(Mono.just(ingredientCommand));
 
         //then
-        mockMvc.perform(get("/recipe/"+ UUID.randomUUID() +"/ingredient/"+ UUID.randomUUID() +"/show"))
+        mockMvc.perform(get("/recipe/1/ingredient/2/show"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("recipe/ingredient/show"))
                 .andExpect(model().attributeExists("ingredient"));
@@ -83,19 +80,20 @@ public class IngredientControllerTest {
     public void testNewIngredientForm() throws Exception {
         //given
         RecipeCommand recipeCommand = new RecipeCommand();
+        recipeCommand.setId("1");
 
         //when
-        Mockito.when(recipeService.findCommandById(Mockito.any(UUID.class))).thenReturn(Mono.just(recipeCommand));
-        Mockito.when(unitOfMeasureService.listAllUoms()).thenReturn(Flux.just(new UnitOfMeasureCommand()));
+        when(recipeService.findCommandById(anyString())).thenReturn(Mono.just(recipeCommand));
+        when(unitOfMeasureService.listAllUoms()).thenReturn(Flux.just(new UnitOfMeasureCommand()));
 
         //then
-        mockMvc.perform(get("/recipe/"+ recipeCommand.getId() +"/ingredient/new"))
+        mockMvc.perform(get("/recipe/1/ingredient/new"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("recipe/ingredient/ingredientform"))
                 .andExpect(model().attributeExists("ingredient"))
                 .andExpect(model().attributeExists("uomList"));
 
-        Mockito.verify(recipeService, Mockito.times(1)).findCommandById(Mockito.any(UUID.class));
+        verify(recipeService, times(1)).findCommandById(anyString());
 
     }
 
@@ -105,12 +103,11 @@ public class IngredientControllerTest {
         IngredientCommand ingredientCommand = new IngredientCommand();
 
         //when
-        Mockito.when(ingredientService
-                .findByRecipeIdAndIngredientId(Mockito.any(UUID.class), Mockito.any(UUID.class))).thenReturn(Mono.just(ingredientCommand));
-        Mockito.when(unitOfMeasureService.listAllUoms()).thenReturn(Flux.just(new UnitOfMeasureCommand()));
+        when(ingredientService.findByRecipeIdAndIngredientId(anyString(), anyString())).thenReturn(Mono.just(ingredientCommand));
+        when(unitOfMeasureService.listAllUoms()).thenReturn(Flux.just(new UnitOfMeasureCommand()));
 
         //then
-        mockMvc.perform(get("/recipe/"+ UUID.randomUUID() +"/ingredient/"+ UUID.randomUUID() +"/update"))
+        mockMvc.perform(get("/recipe/1/ingredient/2/update"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("recipe/ingredient/ingredientform"))
                 .andExpect(model().attributeExists("ingredient"))
@@ -121,42 +118,35 @@ public class IngredientControllerTest {
     public void testSaveOrUpdate() throws Exception {
         //given
         IngredientCommand command = new IngredientCommand();
-        command.setId(UUID.randomUUID());
-        command.setRecipeId(UUID.randomUUID());
-        command.setUnitOfMeasure(new UnitOfMeasureCommand());
-
+        command.setId("3");
+        command.setRecipeId("2");
 
         //when
-        Mockito.when(ingredientService.saveIngredientCommand(Mockito.any())).thenReturn(Mono.just(command));
+        when(ingredientService.saveIngredientCommand(any())).thenReturn(Mono.just(command));
 
         //then
-        mockMvc.perform(post("/recipe/"+ command.getRecipeId() +"/ingredient")
+        mockMvc.perform(post("/recipe/2/ingredient")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .param("id", "")
                 .param("description", "some string")
         )
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/recipe/"+ command.getRecipeId() +"/ingredient/"+ command.getId() +"/show"));
+                .andExpect(view().name("redirect:/recipe/2/ingredient/3/show"));
+
     }
 
     @Test
     public void testDeleteIngredient() throws Exception {
 
-        UUID recipeId = UUID.randomUUID();
-        UUID ingredientId = UUID.randomUUID();
+        when(ingredientService.deleteById(anyString(), anyString())).thenReturn(Mono.empty());
 
-        Mockito.when(ingredientService
-                .deleteById(Mockito.any(UUID.class), Mockito.any(UUID.class))).thenReturn(Mono.empty());
         //then
-        mockMvc.perform(get("/recipe/" + recipeId + "/ingredient/" + ingredientId + "/delete")
+        mockMvc.perform(get("/recipe/2/ingredient/3/delete")
         )
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/recipe/ingredients/" + recipeId ));
+                .andExpect(view().name("redirect:/recipe/2/ingredients"));
 
-        Mockito.verify(ingredientService, times(1))
-                .deleteById(Mockito.any(UUID.class), Mockito.any(UUID.class));
+        verify(ingredientService, times(1)).deleteById(anyString(), anyString());
 
     }
-
-
-
 }

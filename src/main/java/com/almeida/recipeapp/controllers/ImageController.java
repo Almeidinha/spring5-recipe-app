@@ -16,8 +16,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.UUID;
 
+/**
+ * Created by jt on 7/3/17.
+ */
 @Controller
 public class ImageController {
 
@@ -31,19 +33,22 @@ public class ImageController {
 
     @GetMapping("recipe/{id}/image")
     public String showUploadForm(@PathVariable String id, Model model){
-        model.addAttribute("recipe", recipeService.findCommandById(UUID.fromString(id)).block());
+        model.addAttribute("recipe", recipeService.findCommandById(id).block());
+
         return "recipe/imageuploadform";
     }
 
     @PostMapping("recipe/{id}/image")
     public String handleImagePost(@PathVariable String id, @RequestParam("imagefile") MultipartFile file){
-        imageService.saveImageFile(UUID.fromString(id), file).block();
-        return "redirect:/recipe/show/" + id;
+
+        imageService.saveImageFile(id, file).block();
+
+        return "redirect:/recipe/" + id + "/show";
     }
 
     @GetMapping("recipe/{id}/recipeimage")
     public void renderImageFromDB(@PathVariable String id, HttpServletResponse response) throws IOException {
-        RecipeCommand recipeCommand = recipeService.findCommandById(UUID.fromString(id)).block();
+        RecipeCommand recipeCommand = recipeService.findCommandById(id).block();
 
         if (recipeCommand.getImage() != null) {
             byte[] byteArray = new byte[recipeCommand.getImage().length];
