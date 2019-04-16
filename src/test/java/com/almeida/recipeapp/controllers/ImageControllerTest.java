@@ -4,6 +4,7 @@ import com.almeida.recipeapp.commands.RecipeCommand;
 import com.almeida.recipeapp.services.ImageService;
 import com.almeida.recipeapp.services.RecipeService;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -41,6 +42,7 @@ public class ImageControllerTest {
                 .build();
     }
 
+    @Ignore
     @Test
     public void getImageForm() throws Exception {
         //given
@@ -58,6 +60,7 @@ public class ImageControllerTest {
 
     }
 
+    @Ignore
     @Test
     public void handleImagePost() throws Exception {
         MockMultipartFile multipartFile =
@@ -74,6 +77,7 @@ public class ImageControllerTest {
     }
 
 
+    @Ignore
     @Test
     public void renderImageFromDB() throws Exception {
 
